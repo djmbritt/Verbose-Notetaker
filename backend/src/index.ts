@@ -19,10 +19,6 @@ app.get('/', (_req: Request, res: Response) => res.send("🔥"))
 app.get('/asmtoken', async (_req: Request, res: Response) => {
     const assemblyApiTokenUrl = 'https://api.assemblyai.com/v2/realtime/token'
     try {
-        console.log('Getting ASM token 🔐', process.env.ASSEMBLY_KEY)
-        // const response = await fetch(assemblyApiTokenUrl, {
-        //     headers: { authorization: process.env.ASSEMBLY_KEY }
-        // })
         const response = await axios.post(assemblyApiTokenUrl, 
             { expires_in: 3600 }, 
             { headers: { authorization: process.env.ASSEMBLY_KEY} })
