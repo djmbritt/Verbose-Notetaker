@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import '@fontsource/noto-sans/500.css';
+@import '@fontsource/noto-sans/600.css';
+@import '@fontsource/noto-sans/700.css';
+
+body {
+  width: 300px;
+  max-height: 300px;
+  @apply text-base font-sans select-none;
+}
