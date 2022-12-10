@@ -6,21 +6,27 @@
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
-    <source src="https://cdnjs.cloudflare.com/ajax/libs/RecordRTC/5.6.2/RecordRTC.min.js" >
     <div class="app">
-      <p class="counter-label">Counter</p>
-      <div id="counter" class="counter"></div>
-      <div class="button-container">
-        <button id="decrementBtn" class="button">-</button>
-        <button id="incrementBtn" class="button">+</button>
-      </div>
 
-      <hr class="divider" />
-
-      <p class="title">Chrome Extension is Ready!</p>
+      
+      <div class="real-time-interface">
+        <h2 id="real-time-title" class="real-time-interface__title">Click start to begin recording!<h2/>
+          <br>
+          <button class="button-container">
+            <button id="button" class="real-time-interface__button button">Start</button>
+          </button>
+          <br>
+          <p id="message" class="real-time-interface__message"></p>
+        </div>
+        
+        <hr class="divider" />
+      <br>
       <p class="subtitle">Start by updating <code>popup.html</code></p>
     </div>
+    
+    <script src="index.js"></script>
 
+    <!-- Take a look here for some inspiration, we need to remove this later. -->
     <script src="popup.js"></script>
 
     <!--
@@ -30,15 +36,7 @@
       To create a production bundle, use `npm run build`.
     -->
 
-    <hr>
-    <h1>Hello!</h1>
-    <hr>
 
-    <div class="real-time-interface">
-      <p id="real-time-title" class="real-time-interface__title">Click start to begin recording!</p>
-      <button id="button" class="real-time-interface__button">Start</button>
-      <p id="message" class="real-time-interface__message"></p>
-    </div>
-    <script src="index.js"></script>
+
   </body>
 </html>
