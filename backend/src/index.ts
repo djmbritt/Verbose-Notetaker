@@ -32,7 +32,7 @@ app.get('/asmtoken', async (_req: Request, res: Response) => {
 
 // Example GET
 app.get('/feed', async (_req: Request, res: Response) => {
-    const posts = await prisma.post.findMany({
+    const posts = await prisma.recording.findMany({
         where: { published: true },
         include: { author: true }
     })
@@ -42,7 +42,7 @@ app.get('/feed', async (_req: Request, res: Response) => {
 // Example POST
 app.get('/post',async (req: Request, res: Response) => {
     const { title, content, authorEmail } = req.body
-    const post = await prisma.post.create({
+    const post = await prisma.recording.create({
         data: {
             title,
             content,
@@ -57,7 +57,7 @@ app.get('/post',async (req: Request, res: Response) => {
 app.put('/publish/:id', async (req: Request, res: Response) => {
 
     const { id }: {id?: number} = req.params
-    const post = await prisma.post.update({
+    const post = await prisma.recording.update({
         where: { id },
         data: { published: true }
     })
