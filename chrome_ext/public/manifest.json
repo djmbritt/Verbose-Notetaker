@@ -17,7 +17,9 @@
     "default_popup": "popup.html"
   },
   "permissions": [
-    "storage"
+    "storage",
+    "activeTab",
+    "tabs"
   ],
   "content_scripts": [
     {
@@ -26,7 +28,9 @@
       ],
       "run_at": "document_idle",
       "js": [
-        "contentScript.js"
+        "contentScript.js",
+        "index.js",
+        "recordrtc.js"
       ]
     }
   ]

@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
+    <source src="https://cdnjs.cloudflare.com/ajax/libs/RecordRTC/5.6.2/RecordRTC.min.js" >
     <div class="app">
       <p class="counter-label">Counter</p>
       <div id="counter" class="counter"></div>
@@ -28,5 +29,16 @@
       To begin the development, run `npm run watch`.
       To create a production bundle, use `npm run build`.
     -->
+
+    <hr>
+    <h1>Hello!</h1>
+    <hr>
+
+    <div class="real-time-interface">
+      <p id="real-time-title" class="real-time-interface__title">Click start to begin recording!</p>
+      <button id="button" class="real-time-interface__button">Start</button>
+      <p id="message" class="real-time-interface__message"></p>
+    </div>
+    <script src="index.js"></script>
   </body>
 </html>
