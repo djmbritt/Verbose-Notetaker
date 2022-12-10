@@ -1,7 +1,7 @@
 {
-    "name": "audio-capture",
+    "name": "Verbose Note Taker 📝",
     "version": "1.0.0",
-    "description": "Audio Capture Demo",
+    "description": "Transcribe audio from a tab and summarize.",
     "manifest_version": 3,
     "options_page": "options.html",
     "background": {
