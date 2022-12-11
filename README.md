@@ -14,7 +14,15 @@ Be on top your meetings with Verbosey, get real time transcription and meetings 
 
 Open a chromium browser and add the `build.crx` file to `chrome://extensions`
 
+<video controls width="250">
+
+    <source src="/assets/chrome_ext.mp4" type="video/mp4">
+
+</video>
+
+
 ## Setup
+
 ```bash
 # Setup and run server locally
 cd backend
