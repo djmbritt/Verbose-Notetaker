@@ -1,5 +1,8 @@
 # Verbosey
 
+<p align="center"><img src="./assets/logo.png" width="200px"></p>
+
+
 Assembly-AI Hackathon project 📢
 
 Chrome extension to record audio from a tab, transcribe it and summarize it.
