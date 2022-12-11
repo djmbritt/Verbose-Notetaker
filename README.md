@@ -14,9 +14,8 @@ Be on top your meetings with Verbosey, get real time transcription and meetings 
 
 Open a chromium browser and add the `build.crx` file to `chrome://extensions`
 
-<center>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/5aGAP5eAaq8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</center>
+
+[![](https://markdown-videos.deta/youtube/{5aGAP5eAaq8})](https://youtu.be/{5aGAP5eAaq8})
 
 ## Setup
 
