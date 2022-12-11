@@ -2,7 +2,6 @@
 
 <p align="center"><img src="./assets/logo.png" width="200px"></p>
 
-
 Assembly-AI Hackathon project 📢
 
 Team: [devpost.com/software/verbosey](https://devpost.com/software/verbosey#updates)
@@ -10,36 +9,24 @@ Team: [devpost.com/software/verbosey](https://devpost.com/software/verbosey#upda
 Chrome extension to record audio from a tab, transcribe it and summarize it.
 Be on top your meetings with Verbosey, get real time transcription and meetings notes.
 
-## Install extension
-
-Open a chromium browser and add the `build.crx` file to `chrome://extensions`
-
-
-[Installation Video](https://www.youtube.com/watch?v=5aGAP5eAaq8)
-
-Make sure you have the server running!<br>
-Follow the instruction below:<br>
-Before that you will need an API key from [AssemblyAI](https://www.assemblyai.com/)
-
 ## Setup
 
 ```bash
-# Setup and run server locally
+# To build the extension:
+cd ui
+npm install
+npm run build
+
+# If you want to run your own backend (optional):
 cd backend
 # Add your Assembly API key to the .env file
 npm install
 npm run prod
-
-#If above does not work on windows try
+# If above does not work on Windows try
 npm install typescript
-
-# If you're developing the extension (Optional)
-cd ui
-npm install
-npm run build
 ```
 
-## Install dev build
+## Install extension
 
 In a chromium browser (Chrome, Brave, Edge).
 

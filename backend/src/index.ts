@@ -24,7 +24,6 @@ app.get("/asmtoken", async (_req: Request, res: Response) => {
       { headers: { authorization: process.env.ASSEMBLY_KEY } }
     );
     const { data } = response;
-    console.log("New token generated", data);
     res.json(data);
   } catch (error) {
     const {
@@ -46,7 +45,8 @@ app.post(
         "transfer-encoding": "chunked",
       },
     });
-    const { upload_url } = (await assembly.post("/upload", req.file)).data;
+    const { upload_url } = (await assembly.post("/upload", req.file.buffer))
+      .data;
     let { data } = await assembly.post("/transcript", {
       audio_url: upload_url,
       summarization: true,
