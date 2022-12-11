@@ -3,8 +3,67 @@ import RecordRTC, { StereoAudioRecorder } from 'recordrtc';
 import { BsStopCircleFill } from 'react-icons/bs';
 import { AiOutlineLoading } from 'react-icons/ai';
 import { db } from '../../db';
+import axios from 'axios';
 
 const MultiStreamsMixer = require('multistreamsmixer');
+
+const key = "09b7ba36f195481487cac3a89c1f6b5e"
+
+const upload = axios.create({
+    baseURL: "https://api.assemblyai.com/v2",
+    headers: {
+        authorization: key,
+        "content-type": "application/json",
+        "transfer-encoding": "chunked",
+    },
+});
+
+const assembly = axios.create({ baseURL: "https://api.assemblyai.com/v2",
+    headers: {
+        authorization: key,
+        "content-type": "application/json",
+    },
+});
+
+const uploadTranscript = async (data: any) => {
+  console.log("Uploading recording...", data)
+  const uploadResponse = await upload.post("/upload", data).catch(console.error)
+
+  if (uploadResponse?.data.upload_url) {
+      console.log("Posting recording to assembly for transcription.")
+      const params = {
+          audio_url: uploadResponse?.data.upload_url,
+          speaker_labels: true,
+          summarization: true,
+          summary_model: "informative",
+          summary_type: "bullets"
+      }
+      const postResponse = await assembly.post("/transcript", params).catch(console.error)
+
+      if(postResponse?.data) {
+          return postResponse?.data
+      }
+  }
+}
+
+const getSummary = async (transcriptId: string) => {
+  try {
+      const response = await assembly.get(`/transcript/${transcriptId}`)
+
+      if (response?.data?.status === 'queued' || response?.data?.status === 'processing') {
+          console.log("Waiting for server to process data, status: ", response?.data?.status)
+          setTimeout(async () => await getSummary(transcriptId), 1000)
+      } else if (response?.data?.status === 'completed') {
+          console.log(response)
+          return response
+      }else if (response?.data?.status === 'error') {
+          console.error(response)
+      }
+  } catch (error) {
+      console.error(error)
+  }
+}
+
 
 const resize = (w: number, h: number) => {
   const width = window.screen.availWidth;
@@ -42,6 +101,7 @@ const Record: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [length, setLength] = useState(0);
   const recorder = useRef<RecordRTC | null>(null);
+  const uploadRecorder = useRef<RecordRTC | null>(null);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -145,6 +205,19 @@ const Record: React.FC = () => {
         reader.readAsDataURL(blob);
       },
     });
+
+    try {
+      uploadRecorder.current = new RecordRTC(mixedStream.getMixedStream(), {
+        type: 'audio',
+        mimeType: 'audio/wav', // endpoint requires 16bit PCM audio
+        recorderType: StereoAudioRecorder
+      })
+
+      uploadRecorder.current.startRecording()
+    } catch (error) {
+      console.error(error)
+    }
+
     recorder.current.startRecording();
     setLoading(false);
     setLength(0);
@@ -157,16 +230,28 @@ const Record: React.FC = () => {
     console.log(recorder);
     setLoading(true);
     if (!recorder.current) return;
+
     recorder.current.stopRecording(async () => {
       const blob = recorder.current!.getBlob();
-      await db.recordings.add({
-        file: blob,
-        transcript: keys.map((k) => transcript[k].text).join(' '),
-        created_at: new Date(),
-        length,
-      });
-      window.close();
+      
+      uploadRecorder.current?.stopRecording(async () => {
+        const uploadBlob = uploadRecorder.current!.getBlob()
+        const uploadRes = await uploadTranscript(uploadBlob)
+        const summ = await getSummary(uploadRes.id)
+
+        await db.recordings.add({
+          file: uploadBlob,
+          transcript: keys.map((k) => transcript[k].text).join(' '),
+          created_at: new Date(),
+          summary: summ,
+          length,
+        });
+      })
+      
+
+
     });
+    window.close();
   };
 
   useEffect(() => {

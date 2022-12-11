@@ -4,6 +4,7 @@ export interface Recording {
   id?: number;
   transcript: string;
   file: Blob;
+  summary: any;
   length: number;
   created_at: Date;
 }
