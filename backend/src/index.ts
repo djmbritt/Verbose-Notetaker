@@ -40,7 +40,7 @@ app.get('/feed', async (_req: Request, res: Response) => {
 })
 
 // Example POST
-app.get('/recording',async (req: Request, res: Response) => {
+app.post('/recording',async (req: Request, res: Response) => {
     const { content, audio, author } = req.body
     const post = await prisma.recording.create({
         data: {
@@ -49,8 +49,35 @@ app.get('/recording',async (req: Request, res: Response) => {
             author
         }
     })
-    res.json(post)
+
+    // TODO
+    const transcript = await transcribe()
+    res.json({ post, transcribe })
 })
+
+// Transcribe complete audio
+// How to pass specific audio?
+const transcribe = async () => {
+
+    const assemblyApiTranscriptUrl = 'https://api.assemblyai.com/v2/transcript'
+    try {
+        const response = await axios.post(assemblyApiTranscriptUrl, {
+            headers: {
+                authorization: process.env.ASSEMBLY_KEY,
+                "content-type": "application/json"
+            },
+            body: {
+                audio_url: "someurl",
+                speaker_labels: true
+            }
+        })
+        const { data } = response
+        res.json(data)
+    } catch (error) {
+        const { response: { status, data }} = error
+        res.status(status).json(data)
+    }
+}
 
 // Example PUT
 app.put('/publish/:id', async (req: Request, res: Response) => {

@@ -96,6 +96,7 @@ async function startRecord(option) {
   // handle incoming messages to display transcription to the DOM
   const texts = {};
   socket.onmessage = (message) => {
+    // console.log(message)
     let msg = '';
     const res = JSON.parse(message.data);
     texts[res.audio_start] = res.text;
