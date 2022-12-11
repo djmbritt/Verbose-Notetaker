@@ -40,14 +40,13 @@ app.get('/feed', async (_req: Request, res: Response) => {
 })
 
 // Example POST
-app.get('/post',async (req: Request, res: Response) => {
-    const { title, content, authorEmail } = req.body
+app.get('/recording',async (req: Request, res: Response) => {
+    const { content, audio, author } = req.body
     const post = await prisma.recording.create({
         data: {
-            title,
+            title: `New Recording: ${Date.now()}`,
             content,
-            published: false,
-            author: { connect: { email: authorEmail } }
+            author
         }
     })
     res.json(post)
