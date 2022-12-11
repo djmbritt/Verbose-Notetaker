@@ -88,7 +88,7 @@ const Record: React.FC = () => {
 
     let socket: WebSocket | null = null;
     if (query.get('transcribe') === 'true') {
-      const response = await fetch('http://localhost:8282/asmtoken');
+      const response = await fetch(`${process.env.BACKEND_URL}/asmtoken`);
       const { token } = await response.json();
       socket = await new Promise((resolve, reject) => {
         const socket = new WebSocket(

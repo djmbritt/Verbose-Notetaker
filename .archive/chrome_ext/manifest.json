@@ -3,7 +3,6 @@
     "version": "1.0.0",
     "description": "Transcribe audio from a tab and summarize.",
     "manifest_version": 3,
-    "options_page": "options.html",
     "background": {
         "service_worker": "background.js"
     },

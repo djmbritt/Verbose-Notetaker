@@ -152,14 +152,31 @@ const NewRecording = ({ back }: { back: () => void }) => {
 
 const Recording = ({ back, id }: { back: () => void; id: number }) => {
   const recording = useLiveQuery(() => db.recordings.get(id));
+  const [summary, setSummary] = useState('hhhhhhhhhhhhhhhhhhhhh');
 
   if (!recording) return <Loading />;
 
   const url = URL.createObjectURL(recording.file);
-  console.log(url);
 
   const download = () => {
-    invokeSaveAsDialog(recording.file, `recording-${id}.wav`);
+    invokeSaveAsDialog(recording.file, `recording-${recording.id}.wav`);
+  };
+
+  const summarize = async () => {
+    let formData = new FormData();
+    let file = new File([recording.file], `recording.wav`);
+    formData.append('file', file, `recording.wav`);
+
+    const data = await (
+      await fetch(`${process.env.BACKEND_URL}/summarize`, {
+        method: 'post',
+        body: formData,
+      }).catch((e) => {
+        alert("Couldn't generate summary, please try again later");
+        throw e;
+      })
+    ).json();
+    setSummary(data.text);
   };
 
   return (
@@ -184,12 +201,13 @@ const Recording = ({ back, id }: { back: () => void; id: number }) => {
           </button>
           <button
             className="flex items-center text-teal-500 bg-teal-50 border-2 border-teal-200 rounded-lg p-2 gap-2 font-bold w-full justify-center shadow-sm"
-            onClick={() => {}}
+            onClick={() => summarize()}
           >
             <BsFillFileBreakFill />
             Summarize
           </button>
         </div>
+        {summary && <div>Summary: {summary}</div>}
         {recording.transcript && <div>{recording.transcript}</div>}
       </div>
     </div>

@@ -6,6 +6,7 @@ var webpack = require('webpack'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   TerserPlugin = require('terser-webpack-plugin');
 var { CleanWebpackPlugin } = require('clean-webpack-plugin');
+require('dotenv').config();
 
 const ASSET_PATH = process.env.ASSET_PATH || '/';
 
@@ -37,12 +38,10 @@ var options = {
   mode: process.env.NODE_ENV || 'development',
   entry: {
     record: path.join(__dirname, 'src', 'pages', 'Record', 'index.jsx'),
-    options: path.join(__dirname, 'src', 'pages', 'Options', 'index.jsx'),
     popup: path.join(__dirname, 'src', 'pages', 'Popup', 'index.jsx'),
-    background: path.join(__dirname, 'src', 'pages', 'Background', 'index.js'),
   },
   chromeExtensionBoilerplate: {
-    notHotReload: ['background'],
+    notHotReload: [],
   },
   output: {
     filename: '[name].bundle.js',
@@ -105,7 +104,7 @@ var options = {
     new CleanWebpackPlugin({ verbose: false }),
     new webpack.ProgressPlugin(),
     // expose and write the allowed env vars on the compiled bundle
-    new webpack.EnvironmentPlugin(['NODE_ENV']),
+    new webpack.EnvironmentPlugin(['NODE_ENV', 'BACKEND_URL']),
     new CopyWebpackPlugin({
       patterns: [
         {
@@ -142,12 +141,6 @@ var options = {
           force: true,
         },
       ],
-    }),
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'src', 'pages', 'Options', 'index.html'),
-      filename: 'options.html',
-      chunks: ['options'],
-      cache: false,
     }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'pages', 'Popup', 'index.html'),

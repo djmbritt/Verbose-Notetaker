@@ -1,9 +1,9 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import Options from './Record';
+import Record from './Record';
 import './index.css';
 
-render(<Options />, window.document.querySelector('#app-container'));
+render(<Record />, window.document.querySelector('#app-container'));
 
 if (module.hot) module.hot.accept();
