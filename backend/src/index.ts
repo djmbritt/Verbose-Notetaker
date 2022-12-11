@@ -23,6 +23,7 @@ app.get('/asmtoken', async (_req: Request, res: Response) => {
             { expires_in: 3600 }, 
             { headers: { authorization: process.env.ASSEMBLY_KEY} })
         const { data } = response
+        console.log("New token generated", data)
         res.json(data)
     } catch (error) {
         const { response: { status, data } } = error
