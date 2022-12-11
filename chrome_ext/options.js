@@ -194,13 +194,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 
 buttonEl.addEventListener('click', async () => {
-  const text = messageEl.innerText
+  const content = messageEl.innerText
   const data = new FormData()
   data.append('blob', blob)
   const response = await fetch('http://localhost:8282/recording', {
     method: "POST",
     mode: "cors",
-    body: JSON.stringify({ text })
+    body: JSON.stringify({ content, author: 123 })
   })
   console.log(response)
 });
