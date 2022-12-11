@@ -12,7 +12,7 @@ Be on top your meetings with Verbosey, get real time transcription and meetings 
 
 ## Install extension
 
-Open a chromium browser and add the `build.crx` file to [chrome://extensions](chrome://extensions)
+Open a chromium browser and add the `build.crx` file to `chrome://extensions`
 
 ## Setup
 ```bash
