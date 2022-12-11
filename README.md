@@ -17,6 +17,8 @@ Open a chromium browser and add the `build.crx` file to `chrome://extensions`
 
 [Installation Video](https://www.youtube.com/watch?v=5aGAP5eAaq8)
 
+Make sure you have the server running! Follow the instruction below:
+
 ## Setup
 
 ```bash
