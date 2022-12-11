@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "dev": "tsc-watch --onSuccess 'node ./dist/index.js' --onFailure 'echo Something went wrong 🔥🔥🔥'",
+    "dev": "tsc-watch --onSuccess \"node ./dist/src/index.js\" --onFailure \"echo Something went wrong 🔥🔥🔥\"",
     "prod": "npm run build && node dist/index.js",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev --name init"

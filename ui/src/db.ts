@@ -3,9 +3,9 @@ import Dexie, { Table } from 'dexie';
 export interface Recording {
   id?: number;
   transcript: string;
-  file: string;
+  file: Blob;
   length: number;
-  created_at: number;
+  created_at: Date;
 }
 
 export class DexieDB extends Dexie {
