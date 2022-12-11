@@ -16,10 +16,9 @@ Open a chromium browser and add the `build.crx` file to `chrome://extensions`
 
 <video controls width="250">
 
-    <source src="/assets/chrome_ext.mp4" type="video/mp4">
+    <source src="https://github.com/djmbritt/Verbose-Notetaker/raw/main/assets/chrome_ext.mp4" type="video/mp4">
 
 </video>
-
 
 ## Setup
 
