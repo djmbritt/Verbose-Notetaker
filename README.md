@@ -17,8 +17,8 @@ Open a chromium browser and add the `build.crx` file to `chrome://extensions`
 
 [Installation Video](https://www.youtube.com/watch?v=5aGAP5eAaq8)
 
-Make sure you have the server running! 
-Follow the instruction below: 
+Make sure you have the server running!<br>
+Follow the instruction below:<br>
 Before that you will need an API key from [AssemblyAI](https://www.assemblyai.com/)
 
 ## Setup
