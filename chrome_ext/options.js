@@ -2,8 +2,12 @@
 
 // required dom elements
 const buttonEl = document.getElementById('button');
+const fileEl = document.getElementsByName('file')
 const messageEl = document.getElementById('message');
 const titleEl = document.getElementById('real-time-title');
+
+let blob
+let text
 
 function tabCapture() {
   return new Promise((resolve) => {
@@ -125,7 +129,7 @@ async function startRecord(option) {
         messageEl.style.display = ''
         isRecording = true
         buttonEl.innerText = 'Stop Recording'
-        const recorder = new RecordRTC(mixedStream.getMixedStream(), {
+        recordrtc = new RecordRTC(mixedStream.getMixedStream(), {
           type: 'audio',
           mimeType: 'audio/webm;codecs=pcm', // endpoint requires 16bit PCM audio
           recorderType: StereoAudioRecorder,
@@ -145,10 +149,11 @@ async function startRecord(option) {
               }
             };
             reader.readAsDataURL(blob);
+            blob = recordrtc.getBlob()
           },
         });
   
-        recorder.startRecording();
+        recordrtc.startRecording();
       }
     } catch (error) {
       console.error(error)
@@ -188,6 +193,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 
-buttonEl.addEventListener('click', () => {
-
+buttonEl.addEventListener('click', async () => {
+  const text = messageEl.innerText
+  const data = new FormData()
+  data.append('blob', blob)
+  const response = await fetch('http://localhost:8282/recording', {
+    method: "POST",
+    mode: "cors",
+    body: JSON.stringify({ text })
+  })
+  console.log(response)
 });
+
+fileEl.addEventListener('click', async () => {
+  var a = document.createElement("a");
+  a.href = window.URL.createObjectURL(new Blob(["CONTENT"], {type: "text/plain"}));
+  a.download = "demo.txt";
+  a.click();
+})
