@@ -72,11 +72,35 @@ const transcribe = async () => {
             }
         })
         const { data } = response
-        res.json(data)
+        return data
     } catch (error) {
-        const { response: { status, data }} = error
-        res.status(status).json(data)
+        console.error(error)
+        return error
     }
+}
+
+// Add summary exmaple
+const summarize = async () = => {
+
+// const axios = require("axios");
+  
+const assembly = axios.create({
+    baseURL: "https://api.assemblyai.com/v2",
+    headers: {
+        authorization: "YOUR-API-TOKEN",
+        "content-type": "application/json",
+    },
+});
+assembly
+    .post("/transcript", {
+        audio_url: "https://bit.ly/3qDXLG8",
+        summarization: true,
+        summary_model: "informative",
+        summary_type: "bullets"
+    })
+    .then((res) => console.log(res.data))
+    .catch((err) => console.error(err));
+
 }
 
 // Example PUT
