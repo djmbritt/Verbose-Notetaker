@@ -152,7 +152,7 @@ const NewRecording = ({ back }: { back: () => void }) => {
 
 const Recording = ({ back, id }: { back: () => void; id: number }) => {
   const recording = useLiveQuery(() => db.recordings.get(id));
-  const [summary, setSummary] = useState('hhhhhhhhhhhhhhhhhhhhh');
+  const [summary, setSummary] = useState('');
 
   if (!recording) return <Loading />;
 
