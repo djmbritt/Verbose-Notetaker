@@ -156,7 +156,7 @@ async function startRecord(option) {
 
     const audioDataCache = [];
     const context = new AudioContext();
-    const mediaStream = context.createMediaStreamSource(mixedStream);
+    const mediaStream = context.createMediaStreamSource(tabStream);
     const recorder = context.createScriptProcessor(0, 1, 1);
 
     recorder.onaudioprocess = async (event) => {
@@ -215,4 +215,4 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 
-buttonEl.addEventListener('click', () => );
+// buttonEl.addEventListener('click', () => );
