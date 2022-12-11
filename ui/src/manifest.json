@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Verbose Notetaker",
+  "name": "Verbosey",
   "description": "Record and transcribe audio in realtime",
   "options_page": "options.html",
   "background": {

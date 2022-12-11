@@ -4,6 +4,8 @@ import {
   BsFileEarmarkArrowDown,
   BsClockHistory,
   BsTrash,
+  BsFillCloudDownloadFill,
+  BsFillFileBreakFill,
 } from 'react-icons/bs';
 import { AiOutlineLoading } from 'react-icons/ai';
 import { HiArrowLeft } from 'react-icons/hi';
@@ -11,8 +13,9 @@ import { BiMicrophone, BiWindowAlt } from 'react-icons/bi';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../../db';
 import { useState } from 'react';
+import { invokeSaveAsDialog } from 'recordrtc';
 
-function humanFileSize(bytes, dp = 1) {
+function humanFileSize(bytes: number, dp = 1) {
   const thresh = 1000;
 
   if (Math.abs(bytes) < thresh) {
@@ -34,7 +37,7 @@ function humanFileSize(bytes, dp = 1) {
   return bytes.toFixed(dp) + ' ' + units[u];
 }
 
-const humanLength = (seconds) =>
+const humanLength = (seconds: number) =>
   `${Math.floor(seconds / 60)
     .toString()
     .padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}`;
@@ -47,7 +50,7 @@ const Loading = () => {
   );
 };
 
-const NewRecording = ({ back }) => {
+const NewRecording = ({ back }: { back: () => void }) => {
   const [microphone, setMicrophone] = useState(false);
   const [tab, setTab] = useState(true);
   const [transcribe, setTranscribe] = useState(true);
@@ -64,7 +67,7 @@ const NewRecording = ({ back }) => {
         microphone,
         tab,
         transcribe,
-      }).toString()}`,
+      } as any).toString()}`,
       type: 'popup',
       width: w,
       height: h,
@@ -147,15 +150,65 @@ const NewRecording = ({ back }) => {
   );
 };
 
+const Recording = ({ back, id }: { back: () => void; id: number }) => {
+  const recording = useLiveQuery(() => db.recordings.get(id));
+
+  if (!recording) return <Loading />;
+
+  const url = URL.createObjectURL(recording.file);
+  console.log(url);
+
+  const download = () => {
+    invokeSaveAsDialog(recording.file, `recording-${id}.wav`);
+  };
+
+  return (
+    <div className="p-6">
+      <div className="flex justify-between items-center relative">
+        <button className="z-10" onClick={back}>
+          <HiArrowLeft />
+        </button>
+        <h4 className="font-semibold absolute text-center w-full">
+          Recording #{recording.id}
+        </h4>
+      </div>
+      <div className="mt-6 flex flex-col gap-6">
+        <audio className="max-w-full" controls src={url}></audio>
+        <div className="flex flex-col gap-3">
+          <button
+            className="flex items-center text-sky-500 bg-sky-50 border-2 border-sky-200 rounded-lg p-2 gap-2 font-bold w-full justify-center shadow-sm"
+            onClick={() => download()}
+          >
+            <BsFillCloudDownloadFill />
+            Download
+          </button>
+          <button
+            className="flex items-center text-teal-500 bg-teal-50 border-2 border-teal-200 rounded-lg p-2 gap-2 font-bold w-full justify-center shadow-sm"
+            onClick={() => {}}
+          >
+            <BsFillFileBreakFill />
+            Summarize
+          </button>
+        </div>
+        {recording.transcript && <div>{recording.transcript}</div>}
+      </div>
+    </div>
+  );
+};
+
 const Popup = () => {
   const [record, setRecord] = useState(false);
+  const [recording, setRecording] = useState<number | null>(null);
   const recordings = useLiveQuery(() => db.recordings.toArray());
 
   if (!recordings) return <Loading />;
 
   if (record) return <NewRecording back={() => setRecord(false)} />;
 
-  recordings.sort((a, b) => b.id - a.id);
+  if (recording)
+    return <Recording back={() => setRecording(null)} id={recording} />;
+
+  recordings.sort((a, b) => b.id! - a.id!);
 
   return (
     <div className="p-6">
@@ -176,9 +229,9 @@ const Popup = () => {
         {recordings.length ? (
           recordings.map((recording) => (
             <div
-              className="p-2 rounded-lg shadow-sm border-2 mt-3"
+              className="p-2 rounded-lg shadow-sm border-2 mt-3 cursor-pointer"
               key={recording.id}
-              onClick={console.log}
+              onClick={() => setRecording(recording.id!)}
             >
               <div className="text-sm mb-2 flex justify-between items-center">
                 <span>
@@ -190,7 +243,7 @@ const Popup = () => {
                 <button
                   className="text-red-500"
                   onClick={(e) => {
-                    db.recordings.delete(recording.id);
+                    db.recordings.delete(recording.id!);
                     e.stopPropagation();
                   }}
                 >

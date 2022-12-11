@@ -22,7 +22,6 @@ function tabCapture(): Promise<string> {
     chrome.desktopCapture.chooseDesktopMedia(
       ['audio', 'tab'],
       (streamId, options) => {
-        console.log(streamId, !streamId, 22222);
         resize(350, 600);
         if (!streamId || !options.canRequestAudioTrack)
           reject('Tab capture failed');
@@ -116,8 +115,8 @@ const Record: React.FC = () => {
           socket.close();
         };
         socket.onclose = (event) => {
-          console.log(event);
-          alert('Real-time transcripts stopped.');
+          console.error(event);
+          stop();
         };
       });
     }
@@ -154,14 +153,16 @@ const Record: React.FC = () => {
   keys.sort((a, b) => parseInt(b) - parseInt(a));
 
   const stop = async () => {
-    console.log(recorder);
     setLoading(true);
     if (!recorder.current) return;
     recorder.current.stopRecording(async () => {
       const blob = recorder.current!.getBlob();
       await db.recordings.add({
         file: blob,
-        transcript: keys.map((k) => transcript[k].text).join(' '),
+        transcript: Object.keys(transcript)
+          .sort((a, b) => parseInt(a) - parseInt(b))
+          .map((k) => transcript[k].text)
+          .join(' '),
         created_at: new Date(),
         length,
       });

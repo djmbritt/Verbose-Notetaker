@@ -1,11 +1,28 @@
-# Verbose-Notetaker
+# Verbosey
+
 Assembly-AI Hackathon project 📢
 
-- Git clone this repo
-- `npm ci`
-- 
+Chrome extension to record audio from a tab, transcribe it and summarize it.
+Always have meeting notes from your Zoom, Google Meet, Teams meetings.
 
-```
-npm run dev // start dev server
-npm run prod // start prod server
-```
+## Setup
+
+- Git clone this repo
+- `cd backend`
+- Add your Assembly credentials to the `.env` file
+- `npm install`
+- `npm run prod`
+
+- `cd ui`
+- `npm install`
+- `npm run build`
+
+## Install
+
+In a chromium browser (Chrome, Brave, Edge).
+
+1. Navigate to: [chrome://extensions](chrome://extensions).
+2. Enable developer mode
+3. Click `Load unpacked`
+4. Select the `ui/build` folder.
+5. Go to the extension menu (🧩), and click pin (📌).
