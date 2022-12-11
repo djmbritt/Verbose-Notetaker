@@ -2,12 +2,14 @@
 
 // required dom elements
 const buttonEl = document.getElementById('button');
-const fileEl = document.getElementsByName('file')
+const fileEl = document.getElementById('file')
 const messageEl = document.getElementById('message');
 const titleEl = document.getElementById('real-time-title');
 
 let blob
 let text
+let recordrtc
+let streamrtc
 
 function tabCapture() {
   return new Promise((resolve) => {
@@ -115,7 +117,7 @@ async function startRecord(option) {
     console.error(event);
     socket.close();
   }
-  
+
   // Check for socket close
   socket.onclose = event => {
     console.log(event);
@@ -125,12 +127,28 @@ async function startRecord(option) {
   if (tabStream && userStream && mixedStream) {
 
     try {
+      recordrtc = new RecordRTC(mixedStream.getMixedStream(), {
+        type: 'audio',
+        mimeType: 'audio/wav', // endpoint requires 16bit PCM audio
+        recorderType: StereoAudioRecorder
+      })
+
+      recordrtc.startRecording()
+    } catch (error) {
+      console.error(error)
+    }
+
+    try {
 
       socket.onopen = () => {
         messageEl.style.display = ''
         isRecording = true
         buttonEl.innerText = 'Stop Recording'
-        recordrtc = new RecordRTC(mixedStream.getMixedStream(), {
+
+
+
+        // This stream is for the realtime recording.
+        streamrtc = new RecordRTC(mixedStream.getMixedStream(), {
           type: 'audio',
           mimeType: 'audio/webm;codecs=pcm', // endpoint requires 16bit PCM audio
           recorderType: StereoAudioRecorder,
@@ -143,18 +161,18 @@ async function startRecord(option) {
             const reader = new FileReader();
             reader.onload = () => {
               const base64data = reader.result;
-  
+
               // audio data must be sent as a base64 encoded string
               if (socket) {
                 socket.send(JSON.stringify({ audio_data: base64data.split('base64,')[1] }));
               }
             };
             reader.readAsDataURL(blob);
-            blob = recordrtc.getBlob()
+            blob = streamrtc.getBlob()
           },
         });
-  
-        recordrtc.startRecording();
+
+        streamrtc.startRecording();
       }
     } catch (error) {
       console.error(error)
@@ -193,17 +211,50 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   sendResponse({});
 });
 
-
-buttonEl.addEventListener('click', async () => {
+const uploadMedia = async (dataBlob) => {
   const content = messageEl.innerText
   const data = new FormData()
-  data.append('blob', blob)
-  const response = await fetch('http://localhost:8282/recording', {
-    method: "POST",
-    mode: "cors",
-    body: JSON.stringify({ content, author: 123 })
-  })
-  console.log(response)
+  data.append('blob', dataBlob)
+
+  // Is using a token possible for this type of request? It should be, right?
+  const responseToken = await fetch('http://localhost:8282/asmtoken').catch(console.error);
+  const responseData = await responseToken.json()
+  const { token } = responseData
+  console.log("token", token)
+  const uploadTokenUrl = `https://api.assemblyai.com/v2/upload?token=${token}`
+
+  const uploadUrl = "https://api.assemblyai.com/v2/upload"
+  const params = {
+    headers: {
+      "authorization": "09b7ba36f195481487cac3a89c1f6b5e",
+      "Transfer-Encoding": "chunked"
+    },
+    body: data,
+    method: "POST"
+  }
+
+  const uploadResponse = await fetch(uploadUrl, params).catch(console.error)
+  const dataRes = await uploadResponse.json()
+  console.log(dataRes)
+
+  // Return upload url
+  // { upload_url: "https://cdn.assemblyai.com/upload/76a2a24b-1648-4d78-946a-fe16241ef743" }
+  return dataRes // return upload url
+}
+
+
+buttonEl.addEventListener('click', async () => {
+  if (confirm("Are you sure you  want to stop?")) {
+
+    recordrtc.stopRecording(async () => {
+      const recordBlob = recordrtc.getBlob()
+      console.log(recordrtc, recordBlob)
+      invokeSaveAsDialog(recordBlob, 'note.wav')
+      const response = await uploadMedia(recordBlob)
+      console.log("Uploaded data: ", response)
+    })
+
+  }
 });
 
 fileEl.addEventListener('click', async () => {
