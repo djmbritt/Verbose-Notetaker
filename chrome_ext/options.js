@@ -124,7 +124,7 @@ async function startRecord(option) {
       socket.onopen = () => {
         messageEl.style.display = ''
         isRecording = true
-        buttonEl.innerText = 'Recording'
+        buttonEl.innerText = 'Stop Recording'
         const recorder = new RecordRTC(mixedStream.getMixedStream(), {
           type: 'audio',
           mimeType: 'audio/webm;codecs=pcm', // endpoint requires 16bit PCM audio
@@ -154,35 +154,10 @@ async function startRecord(option) {
       console.error(error)
     }
 
-    const audioDataCache = [];
+    // const audioDataCache = [];
     const context = new AudioContext();
     const mediaStream = context.createMediaStreamSource(tabStream);
     const recorder = context.createScriptProcessor(0, 1, 1);
-
-    recorder.onaudioprocess = async (event) => {
-      if (!context) return;
-
-      const inputData = event.inputBuffer.getChannelData(0);
-      const output = to16kHz(inputData, context.sampleRate);
-      const audioData = to16BitPCM(output);
-
-      audioDataCache.push(...new Int8Array(audioData.buffer));
-
-      if (audioDataCache.length > 1280) {
-        const audioDataArray = new Int8Array(audioDataCache);
-
-        // Process your audio data here
-        // console.log(audioDataArray);
-
-        // You can pass some data to current tab
-        await sendMessageToTab(option.currentTabId, {
-          type: "FROM_OPTION",
-          data: audioDataArray.length,
-        });
-
-        audioDataCache.length = 0;
-      }
-    };
 
     // Prevent page mute
     mediaStream.connect(recorder);
@@ -191,9 +166,7 @@ async function startRecord(option) {
 
 
     // Set recording fields on page.
-    isRecording = !isRecording;
-    buttonEl.innerText = isRecording ? 'Stop' : 'Record';
-    titleEl.innerText = isRecording ? 'Click stop to end recording!' : 'Click start to begin recording!'
+    titleEl.innerText ='Click stop to end and save recording!'
   } else {
     window.close();
   }
@@ -215,4 +188,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 
-// buttonEl.addEventListener('click', () => );
+buttonEl.addEventListener('click', () => {
+
+});
