@@ -2,22 +2,32 @@
 
 Assembly-AI Hackathon project 📢
 
+Team: [devpost.com/software/verbosey](https://devpost.com/software/verbosey#updates)
+
 Chrome extension to record audio from a tab, transcribe it and summarize it.
-Always have meeting notes from your Zoom, Google Meet, Teams meetings.
+Be on top your meetings with Verbosey, get real time transcription and meetings notes.
+
+## Install extension
+
+Open a chromium browser and add the `build.crx` file to `chrome://extensions`
 
 ## Setup
+```bash
+# Setup and run server locally
+cd backend
+npm install
+npm run prod
 
-- Git clone this repo
-- `cd backend`
-- Add your Assembly credentials to the `.env` file
-- `npm install`
-- `npm run prod`
+#If above does not work on windows try
+npm install typescript
 
-- `cd ui`
-- `npm install`
-- `npm run build`
+# If you're developing the extension (Optional)
+cd ui
+npm install
+npm run build
+```
 
-## Install
+## Install dev build
 
 In a chromium browser (Chrome, Brave, Edge).
 
