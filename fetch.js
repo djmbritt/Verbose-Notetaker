@@ -3,8 +3,6 @@ const fs = require('fs')
 
 const key = "09b7ba36f195481487cac3a89c1f6b5e"
 
-let uploadData
-
 const upload = axios.create({
     baseURL: "https://api.assemblyai.com/v2",
     headers: {
@@ -22,34 +20,54 @@ const assembly = axios.create({ baseURL: "https://api.assemblyai.com/v2",
 });
 
 
-// const file = "./note.wav";
-// fs.readFile(file, (err, data) => {
-//     if (err) return console.error(err);
+const file = "./transcript.wav";
+fs.readFile(file, async (err, data) => {
+    if (err) return console.error(err);
 
-//     upload
-//         .post("/upload", data)
-//         .then((res) => {
-//             console.log(res.data)
+    const uploadRes = await uploadTranscript(data)
+    await getSummary(uploadRes.id)
+});
 
-//             assembly
-//                 .post("/transcript", {
-//                     audio_url: res.data.upload_url,
-//                     speaker_labels: true,
-//                     summarization: true,
-//                     summary_model: "informative",
-//                     summary_type: "bullets"
-//                 })
-//                 .then((res) => {
-//                     console.log(res.data)
-//                     assembly.get(`/transcript/${res.data.id}`).then(res => console.log(res.data)).catch(console.error)
-//                 })
-//                 .catch((err) => console.error(err));
-//         })
-//         .catch((err) => console.error(err));
-// });
+const uploadTranscript = async (data) => {
+    console.log("Uploading recording...", data)
+    const uploadResponse = await upload.post("/upload", data).catch(console.error)
 
+    if (uploadResponse.data.upload_url) {
+        console.log("Posting recording to assembly for transcription.")
+        const params = {
+            audio_url: uploadResponse.data.upload_url,
+            speaker_labels: true,
+            summarization: true,
+            summary_model: "informative",
+            summary_type: "bullets"
+        }
+        const postResponse = await assembly.post("/transcript", params).catch(console.error)
 
-assembly.get(`/transcript/r7q8sny453-96b8-4384-9e66-decc418a8d30`).then(res => console.log(res.data)).catch(console.error)
+        if(postResponse.data) {
+            return postResponse.data
+        }
+    }
+}
+
+const getSummary = async (transcriptId) => {
+    try {
+        const response = await assembly.get(`/transcript/${transcriptId}`)
+        // const data = await response.json()
+
+        if (response?.data?.status === 'queued' || response?.data?.status === 'processing') {
+            console.log("Waiting for server to process data, status: ", response?.data?.status)
+            setTimeout(async () => await getSummary(transcriptId), 1000)
+        } else if (response?.data?.status === 'completed') {
+            console.log(response)
+            return response
+        }else if (response?.data?.status === 'error') {
+            console.error(data)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 
 
 
