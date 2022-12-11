@@ -20,6 +20,13 @@ Open a chromium browser and add the `build.crx` file to `chrome://extensions`
 
 </video>
 
+<video controls width="250">
+    <source src="https://github.com/djmbritt/Verbose-Notetaker/raw/main/assets/chrome_ext.mp4" type="video/mp4">
+
+    <a href="https://github.com/djmbritt/Verbose-Notetaker/raw/main/assets/chrome_ext.mp4">MP4</a>
+</video>
+
+
 ## Setup
 
 ```bash
