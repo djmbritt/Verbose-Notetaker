@@ -79,8 +79,8 @@ const transcribe = async () => {
     }
 }
 
-// Add summary exmaple
-const summarize = async () = => {
+// Add summary exmaple;
+const summarize = async () => {
 
 // const axios = require("axios");
   
